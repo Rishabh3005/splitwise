@@ -11,7 +11,7 @@ app.set('port', (process.env.PORT || 3000));
 
 
 
-//sttaic files
+//static files
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.static('assets'));
 
