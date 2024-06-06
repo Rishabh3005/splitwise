@@ -2489,19 +2489,19 @@
   .single-review-card {
     margin-bottom: 24px;
   }
-  .preview-demos-area .section-title p {
+  .preview-testimony-area .section-title p {
     font-size: 16px;
   }
-  .preview-demos-area .single-demo-box {
+  .preview-testimony-area .single-demo-box {
     margin: 15px 15px;
   }
-  .preview-demos-area h3 {
+  .preview-testimony-area h3 {
     font-size: 18px;
   } 
-  .preview-demos-area .image-bg {
+  .preview-testimony-area .image-bg {
     height: 300px;
   }
-  .preview-demos-area .image-bg .image-demo-scroll {
+  .preview-testimony-area .image-bg .image-demo-scroll {
     height: 300px;
   }
   .preview-features-area .shape-1, 
@@ -4236,13 +4236,13 @@
   .copyright-area .logo img {
     width: 145px;
   }
-  .preview-demos-area .single-demo-box {
+  .preview-testimony-area .single-demo-box {
     margin: 20px 10px;
   }
-  .preview-demos-area .image-bg {
+  .preview-testimony-area .image-bg {
     height: 350px;
   }
-  .preview-demos-area .image-bg .image-demo-scroll {
+  .preview-testimony-area .image-bg .image-demo-scroll {
     height: 350px;
   }
   .preview-features-area .single-feature-box {
@@ -4654,10 +4654,10 @@
   .ea-section-footer-area .container {
     padding: 0 20px;
   }
-  .preview-demos-area .image-bg {
+  .preview-testimony-area .image-bg {
     height: 320px;
   }
-  .preview-demos-area .image-bg .image-demo-scroll {
+  .preview-testimony-area .image-bg .image-demo-scroll {
     height: 320px;
   }
 }
