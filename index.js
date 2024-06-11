@@ -26,6 +26,19 @@ app.get('/',function(req,res){
 });
 
 
+//Get Request
+app.get('/allgroups',function(req,res){
+    res.render('grouphome');
+
+});
+
+app.get('/addgroup',function(req,res){
+    res.render('addgroup');
+
+});
+
+
+
 app.listen(app.get('port'),function(){
     console.log('Listening to 3000')
 })
