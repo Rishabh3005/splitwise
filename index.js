@@ -27,7 +27,7 @@ app.get('/',function(req,res){
 
 
 //Get Request
-app.get('/allgroups',function(req,res){
+app.get('/addexpenses',function(req,res){
     res.render('grouphome');
 
 });
