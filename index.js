@@ -39,6 +39,17 @@ app.get('/addgroup',function(req,res){
 
 
 
+app.get('/addfriends',function(req,res){
+    res.render('grouphome');
+
+});
+
+app.get('/request',function(req,res){
+    res.render('addgroup');
+
+});
+
+
 app.listen(app.get('port'),function(){
     console.log('Listening to 3000')
 })
