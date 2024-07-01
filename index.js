@@ -37,15 +37,19 @@ app.get('/addgroup',function(req,res){
 
 });
 
+app.get('/myfriends',function(req,res){
+    res.render('myfriends');
+
+});
 
 
 app.get('/addfriends',function(req,res){
-    res.render('grouphome');
+    res.render('addfriends');
 
 });
 
 app.get('/request',function(req,res){
-    res.render('addgroup');
+    res.render('pendingrequest');
 
 });
 
