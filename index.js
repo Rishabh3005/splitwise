@@ -2,8 +2,12 @@ const express=require("express");
 const path=require("path");
 var bodyParser = require('body-parser');
 const mstuserDAO = require('./dao/MstUserDAO');
+const bcrypt = require('bcrypt');
+
+
 const app=express();
 
+const saltRounds = 10;
 
 //Set Values
 app.set('views',path.join(__dirname, 'views'));
@@ -91,23 +95,86 @@ app.post('/signup',function(req,res){
    
    
    
-    (async ()=>{
-       try{
-          
-            await mstuserDAO.saveuser(firstName,lastName,emailid,password);
-          
-            return res.jsonp("Everything is fine");
-       }
-       catch (error){
-           console.log(error);
-           return res.jsonp("Something Went Wrong.");
-       }
-   
+    ( async ()=>{
+        
+        try {
+            
+        const salt = await bcrypt.genSalt(saltRounds );
+        
+        const hash =await bcrypt.hash(password, salt);
 
+        await mstuserDAO.saveuser(firstName,lastName,emailid,hash);
+        
+        return res.render("login");
+        
+        }catch (error){
+            console.log(error);
+            return res.jsonp("Something Went Wrong.");
+        }
+
+        
+        })();
+    
+    
+});
+
+
+
+
+
+
+app.post('/login',function(req,res){
+
+    var emailid=req.body.emailid;
+    var password=req.body.password;
+
+
+   
+    
+  
+        
+    ( async ()=>{
+        
+        try{
+        const hashPassword=await mstuserDAO.hashPassword(emailid);
+        //console.log(hashPassword);
+        if(hashPassword[0]==null)
+            return res.jsonp("Username doesn't exist.");
+        else{
+            var hashPass=hashPassword[0].password;
+            const result= await bcrypt.compare(password, hashPass);
+            
+            if(result){
+            const loginUser=await mstuserDAO.loginUser(emailid);
+            var data=hashPassword[0];
+           
+            return res.jsonp("Everything is fine");
+            }else{
+                return res.jsonp("Password is incorrect");
+            }
+        }
+        
+
+        }
+        catch (error){
+            console.log(error);
+            return res.jsonp("Something Went Wrong.");
+        }
 
     })();
     
+
+
+
+
     
+
+   
+
+
+
+
+
 })
 
 

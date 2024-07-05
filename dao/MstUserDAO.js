@@ -53,4 +53,53 @@ data.saveuser= async (firstName,lastName,emailid,password)=>{
 
 }  
   
+
+
+
+
+
+data.hashPassword=async (emailid)=>{
+
+ 
+  const pool= await dbPool.pool;
+
+    var query=" select password from equisplitschema.mstusers where emailid =$1  ";
+    
+    
+  
+   
+      try{
+      
+      const results=await pool.query(query, [emailid] );
+      return results.rows;
+      }
+      catch(error){
+        throw new Error(error);
+      }
+         
+
+}
+
+
+
+data.loginUser=async (emailid)=>{
+
+  const pool= await dbPool.pool;
+
+    var updateLogin="update equisplitschema.mstusers set lastlogin = CURRENT_TIMESTAMP where emailid =$1";
+
+    var query=" select userid, firstname, lastname, emailid from equisplitschema.mstusers where emailid =$1  ";
+
+      try{
+      
+        await pool.query(updateLogin, [emailid] );
+        const results=await pool.query(query, [emailid] );
+        return results.rows;
+      }
+      catch (error){
+        throw new Error(error);
+      }
+
+
+}  
 module.exports = data;
