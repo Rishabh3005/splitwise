@@ -3,7 +3,7 @@ const path=require("path");
 var bodyParser = require('body-parser');
 const mstuserDAO = require('./dao/MstUserDAO');
 const bcrypt = require('bcrypt');
-
+const sessions = require('express-session');
 
 const app=express();
 
@@ -13,6 +13,22 @@ const saltRounds = 10;
 app.set('views',path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.set('port', (process.env.PORT || 3000));
+
+
+
+// creating 24 hours from milliseconds
+//const oneDay = 1000 * 60 * 60 * 24;
+
+const oneDay = 1000 * 120 * 10;
+
+//session middleware
+app.use(sessions({
+    secret: "thisismysecrctekeyfhrgfgrfrty84fwir767",
+    saveUninitialized:true,
+    cookie: { maxAge: oneDay },
+    resave: false
+}));
+
 
 
 
@@ -146,8 +162,8 @@ app.post('/login',function(req,res){
             
             if(result){
             const loginUser=await mstuserDAO.loginUser(emailid);
-            var data=hashPassword[0];
            
+            req.session.profile=loginUser;
             return res.jsonp("Everything is fine");
             }else{
                 return res.jsonp("Password is incorrect");
