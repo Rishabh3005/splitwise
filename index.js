@@ -40,6 +40,19 @@ app.use(express.static('assets'));
 
 
 
+//session checker
+var sessionChecker = (req, res, next) => {    
+    
+    if (req.session.profile) {
+        
+        next();
+    } else {
+        
+        res.redirect('/login');
+    }
+};
+
+
 //Get Request
 app.get('/',function(req,res){
     res.render('home');
@@ -65,7 +78,10 @@ app.get('/',function(req,res){
 });
 
 app.get('/addexpenses',function(req,res){
-    res.render('grouphome');
+    const profileDetails=req.session.profile;
+    
+
+    res.render('grouphome',{profile:profileDetails});
 
 });
 
@@ -121,7 +137,7 @@ app.post('/signup',function(req,res){
 
         await mstuserDAO.saveuser(firstName,lastName,emailid,hash);
         
-        return res.render("login");
+        return res.redirect("/login");
         
         }catch (error){
             console.log(error);
@@ -164,7 +180,7 @@ app.post('/login',function(req,res){
             const loginUser=await mstuserDAO.loginUser(emailid);
            
             req.session.profile=loginUser;
-            return res.jsonp("Everything is fine");
+            return res.redirect("/addexpenses");
             }else{
                 return res.jsonp("Password is incorrect");
             }
