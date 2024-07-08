@@ -49,35 +49,65 @@
                 <div class="pagetitle">
                     <h1>Pending Requests</h1>
                     <nav>
-                      <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="#">Friends</a></li>
-                        <li class="breadcrumb-item active">Pending Requests</li>
-                      </ol>
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="#">Friends</a></li>
+                            <li class="breadcrumb-item active">Pending Requests</li>
+                        </ol>
                     </nav>
-                  </div><!-- End Page Title -->
-                  <section class="section dashboard">
-                    
+                </div><!-- End Page Title -->
+                <section class="section dashboard">
+
                     <div class="row">
 
                         <div class="card">
 
                             <div class="card-body">
-                        <ul>
 
-                            <li>Name 1</li>
-                            <li>Name 2</li>
-                        </ul>
+                                <ul class="list-group mt-3">
+
+
+                                    <% for(var i=0; i < pendingReqList.length; i++) { %>
+                                        <li class="list-group-item">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <h5 class="mb-1">
+                                                        <%=pendingReqList[i].firstname%>
+                                                            <%=pendingReqList[i].lastname%>
+                                                    </h5>
+                                                    <small>
+                                                        <%=pendingReqList[i].emailid%>
+                                                    </small>
+                                                </div>
+                                                <div>
+                                                    <button class="btn btn-success btn-sm mr-2"
+                                                        onclick="acceptFriend(<%=pendingReqList[i].userid%>)">Accept</button>
+                                                    <button class="btn btn-danger btn-sm"
+                                                        onclick="rejectFriend(<%=pendingReqList[i].userid%>)">Reject</button>
+                                                </div>
+                                            </div>
+                                        </li>
+
+
+                                        <% } %>
+
+                                </ul>
+
+
+
+
+
+
+                            </div>
+                        </div>
+
+
                     </div>
-                    </div>
 
 
-                    </div>
-           
 
 
-                
 
-                  </section>
+                </section>
 
 
             </main>
@@ -98,7 +128,51 @@
             <!-- Template Main JS File -->
             <script src="js/main.js"></script>
 
+            <script src="js/jquery.min.js"></script>
 
+            <script>
+
+                $(document).ready(function () { });
+
+
+
+                function acceptFriend(friendid) {
+                    $.ajax({
+                        url: 'acceptFriend',
+                        method: 'POST',
+                        data: { friendid: friendid },
+                        success: function () {
+
+                        },
+                        error: function (err) {
+                            console.error('Error fetching data:', err);
+                        }
+                    });
+
+
+
+                }
+                
+
+
+                function rejectFriend(friendid) {
+                    $.ajax({
+                        url: 'rejectFriend',
+                        method: 'POST',
+                        data: { friendid: friendid },
+                        success: function () {
+
+                        },
+                        error: function (err) {
+                            console.error('Error fetching data:', err);
+                        }
+                    });
+
+
+
+                }
+
+            </script>
 
 
 </body>

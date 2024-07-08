@@ -80,7 +80,7 @@ app.get('/',function(req,res){
 app.get('/addexpenses',function(req,res){
     const profileDetails=req.session.profile;
     
-
+    
     res.render('grouphome',{profile:profileDetails});
 
 });
@@ -90,23 +90,76 @@ app.get('/addgroup',function(req,res){
 
 });
 
-app.get('/myfriends',function(req,res){
-    res.render('myfriends');
+app.get('/myfriends',sessionChecker,async (req,res)=>{
+
+    const userid= req.session.profile[0].userid;
+
+    try {
+        // Example: fetch data from database with pagination
+        const friendsList=await mstuserDAO.getFirendsList(userid);
+        res.render('myfriends',{friendsList:friendsList});
+       
+    } catch (err) {
+        res.status(500).json({ error: 'Internal server error' });
+    }
+   
 
 });
 
 
-app.get('/addfriends',function(req,res){
+app.get('/addfriends',sessionChecker,function(req,res){
     res.render('addfriends');
 
 });
 
-app.get('/request',function(req,res){
-    res.render('pendingrequest');
+app.get('/request',sessionChecker,async (req,res)=>{
+    const userid= req.session.profile[0].userid;
+    try {
+        // Example: fetch data from database with pagination
+        const pendingReq=await mstuserDAO.getPendingRequest(userid);
+        res.render('pendingrequest',{pendingReqList:pendingReq});
+       
+    } catch (err) {
+        res.status(500).json({ error: 'Internal server error' });
+    }
+
+
+
+    
 
 });
 
 
+
+app.get('/getuserlist',sessionChecker, async (req, res) => {
+    const userid= req.session.profile[0].userid;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const keyword = req.query.keyword ;
+    try {
+        // Example: fetch data from database with pagination
+        const data = await mstuserDAO.fetchData(page, limit,keyword,userid);
+        res.json(data);
+    } catch (err) {
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
+
+app.get('/sendRequest',sessionChecker, async (req, res) => {
+   
+    const friendid = parseInt(req.query.friendid) ;
+    const userid= req.session.profile[0].userid;
+   
+    try {
+        // Example: fetch data from database with pagination
+        await mstuserDAO.sendRequest(userid, friendid);
+       
+    } catch (err) {
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
 
 
@@ -213,6 +266,70 @@ app.post('/login',function(req,res){
 
 
 
+
+app.post('/acceptFriend',sessionChecker,async (req,res)=>{
+    const friendid = parseInt(req.body.friendid) ;
+    const userid= req.session.profile[0].userid;
+    
+    try {
+        // Example: fetch data from database with pagination
+        await mstuserDAO.acceptFriend(userid,friendid);
+        
+       
+    } catch (err) {
+        res.status(500).json({ error: 'Internal server error' });
+    }
+
+
+
+    
+
+});
+
+
+
+
+
+app.post('/rejectFriend',sessionChecker,async (req,res)=>{
+    const friendid = parseInt(req.query.friendid) ;
+    const userid= req.session.profile[0].userid;
+    try {
+        // Example: fetch data from database with pagination
+        await mstuserDAO.rejectFriend(userid,friendid);
+        
+       
+    } catch (err) {
+        res.status(500).json({ error: 'Internal server error' });
+    }
+
+
+
+    
+
+});
+
+
+
+
+
+app.post('/removeFriend',sessionChecker,async (req,res)=>{
+    const friendid = parseInt(req.body.friendid) ;
+    const userid= req.session.profile[0].userid;
+    
+    try {
+        // Example: fetch data from database with pagination
+        await mstuserDAO.removeFriend(userid,friendid);
+        
+       
+    } catch (err) {
+        res.status(500).json({ error: 'Internal server error' });
+    }
+
+
+
+    
+
+});
 app.listen(app.get('port'),function(){
     console.log('Listening to 3000')
 })

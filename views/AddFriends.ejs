@@ -59,10 +59,10 @@
                     
                     <div class="row  d-flex ">  
                     <div class="search-bar align-self-center">
-                    <form class="search-form d-flex align-items-center" action="">
+                    <form class="search-form d-flex align-items-center" action="#">
 
                         <input type="text" class="form-control" id="search" name="search" placeholder="Search..." >
-                       
+                        <button  type="button" class="btn btn-primary " onclick="fetchData()">Search</button>
                     </form>
                 </div>
 
@@ -75,13 +75,13 @@
                     <div class="card">
 
                         <div class="card-title"> <h2>Result</h2></div>
-                        <div class="card-body">
-                    <ul>
-
-                        <li>Name 1</li>
-                        <li>Name 2</li>
-                    </ul>
-                </div>
+                        <div class="card-body" id="data-container">
+                          
+                            <ul class="list-group mt-3" id="peopleList">
+                               
+                              </ul>
+                   
+                        </div>
                 </div>
 
 
@@ -109,7 +109,92 @@
             <!-- Template Main JS File -->
             <script src="js/main.js"></script>
 
+            <script src="js/jquery.min.js"></script>
+           
 
+
+
+            <script>
+                
+$(document).ready(function() {
+   
+
+   
+
+   
+
+    // Detect scroll event to trigger fetching more data
+    $(window).scroll(function() {
+        if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
+            fetchData(); // Load more data when scrolled near bottom
+        }
+    });
+});
+
+let page = 1;
+const limit = 10; // Number of items to fetch per page
+ // Function to fetch data from server
+ function fetchData() {
+        const keyword=$("#search").val();
+
+        
+        $.ajax({
+            url: 'getuserlist',
+            method: 'GET',
+            data: { page: page, limit: limit,keyword:keyword },
+            success: function(response) {
+                if (response.length > 0) {
+                    // Append fetched data to the DOM
+                    response.forEach(item => {
+                        // Append data to your container element
+                        $('#peopleList').append(formatList(item.userid,item.firstname+" "+item.lastname,item.emailid));
+                    });
+                    page++; // Increment page number for the next fetch
+                } else {
+                    // No more data available
+                    $('#scroll-info').text('End of data');
+                }
+            },
+            error: function(err) {
+                console.error('Error fetching data:', err);
+            }
+        });
+    }
+
+
+
+
+    function formatList(id, name, email){
+
+        const html = "<li class='list-group-item'><div class='d-flex justify-content-between align-items-center'> "+
+            " <div><h5 class='mb-1'>"+name+"</h5>"+
+                "<small>"+email+"</small>"+
+             " </div> "+
+                "<button class='btn btn-primary btn-sm' onclick='addFriend("+id+")'>Add Friend</button>"+
+                "</div> </li>"
+
+        return html;        
+    }
+
+
+    function addFriend(id){
+        $.ajax({
+            url: 'sendRequest',
+            method: 'GET',
+            data: { friendid: id},
+            success: function() {
+                   
+            },
+            error: function(err) {
+                console.error('Error fetching data:', err);
+            }
+        });
+
+    }
+
+
+
+            </script>
 
 
 </body>
