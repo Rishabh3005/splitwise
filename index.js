@@ -2,6 +2,7 @@ const express=require("express");
 const path=require("path");
 var bodyParser = require('body-parser');
 const mstuserDAO = require('./dao/MstUserDAO');
+const friendsDAO = require('./dao/FriendsMethodDAO');
 const bcrypt = require('bcrypt');
 const sessions = require('express-session');
 
@@ -96,7 +97,7 @@ app.get('/myfriends',sessionChecker,async (req,res)=>{
 
     try {
         // Example: fetch data from database with pagination
-        const friendsList=await mstuserDAO.getFirendsList(userid);
+        const friendsList=await friendsDAO.getFirendsList(userid);
         res.render('myfriends',{friendsList:friendsList});
        
     } catch (err) {
@@ -116,7 +117,7 @@ app.get('/request',sessionChecker,async (req,res)=>{
     const userid= req.session.profile[0].userid;
     try {
         // Example: fetch data from database with pagination
-        const pendingReq=await mstuserDAO.getPendingRequest(userid);
+        const pendingReq=await friendsDAO.getPendingRequest(userid);
         res.render('pendingrequest',{pendingReqList:pendingReq});
        
     } catch (err) {
@@ -138,7 +139,7 @@ app.get('/getuserlist',sessionChecker, async (req, res) => {
     const keyword = req.query.keyword ;
     try {
         // Example: fetch data from database with pagination
-        const data = await mstuserDAO.fetchData(page, limit,keyword,userid);
+        const data = await friendsDAO.fetchData(page, limit,keyword,userid);
         res.json(data);
     } catch (err) {
         res.status(500).json({ error: 'Internal server error' });
@@ -154,7 +155,7 @@ app.get('/sendRequest',sessionChecker, async (req, res) => {
    
     try {
         // Example: fetch data from database with pagination
-        await mstuserDAO.sendRequest(userid, friendid);
+        await friendsDAO.sendRequest(userid, friendid);
        
     } catch (err) {
         res.status(500).json({ error: 'Internal server error' });
@@ -273,7 +274,7 @@ app.post('/acceptFriend',sessionChecker,async (req,res)=>{
     
     try {
         // Example: fetch data from database with pagination
-        await mstuserDAO.acceptFriend(userid,friendid);
+        await friendsDAO.acceptFriend(userid,friendid);
         
        
     } catch (err) {
@@ -295,7 +296,7 @@ app.post('/rejectFriend',sessionChecker,async (req,res)=>{
     const userid= req.session.profile[0].userid;
     try {
         // Example: fetch data from database with pagination
-        await mstuserDAO.rejectFriend(userid,friendid);
+        await friendsDAO.rejectFriend(userid,friendid);
         
        
     } catch (err) {
@@ -318,7 +319,7 @@ app.post('/removeFriend',sessionChecker,async (req,res)=>{
     
     try {
         // Example: fetch data from database with pagination
-        await mstuserDAO.removeFriend(userid,friendid);
+        await friendsDAO.removeFriend(userid,friendid);
         
        
     } catch (err) {

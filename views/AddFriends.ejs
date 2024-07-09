@@ -147,7 +147,7 @@ const limit = 10; // Number of items to fetch per page
                     // Append fetched data to the DOM
                     response.forEach(item => {
                         // Append data to your container element
-                        $('#peopleList').append(formatList(item.userid,item.firstname+" "+item.lastname,item.emailid));
+                        $('#peopleList').append(formatList(item.userid,item.firstname+" "+item.lastname,item.emailid,item.flag));
                     });
                     page++; // Increment page number for the next fetch
                 } else {
@@ -164,14 +164,23 @@ const limit = 10; // Number of items to fetch per page
 
 
 
-    function formatList(id, name, email){
+    function formatList(id, name, email, flag){
 
-        const html = "<li class='list-group-item'><div class='d-flex justify-content-between align-items-center'> "+
+        var html = "<li class='list-group-item'><div class='d-flex justify-content-between align-items-center'> "+
             " <div><h5 class='mb-1'>"+name+"</h5>"+
                 "<small>"+email+"</small>"+
-             " </div> "+
-                "<button class='btn btn-primary btn-sm' onclick='addFriend("+id+")'>Add Friend</button>"+
-                "</div> </li>"
+             " </div> ";
+
+             if(flag==2)
+
+                html+="<button class='btn btn-primary btn-sm' onclick='addFriend("+id+")'>Add Friend</button>";
+            else if(flag==1)
+                html+="<p>Pending Request</p>"
+            else
+                html+="<p>Friends</p>"
+             
+             
+             html+=   "</div> </li>"
 
         return html;        
     }
