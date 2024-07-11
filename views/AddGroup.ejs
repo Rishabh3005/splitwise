@@ -76,16 +76,26 @@
                                         <h5 class="card-title">Add Group</h5>
 
                                         <!-- Vertical Form -->
-                                        <form class="row g-3">
+                                        <form class="row g-3" action="/addgroup" method="post">
                                             <div class="col-12">
                                                 <label for="groupname" class="form-label" >Group Name</label>
-                                                <input type="text" class="form-control" id="groupname" required>    
+                                                <input type="text" class="form-control" name="groupname" id="groupname" required>    
                                             </div>
                                             
                                             <div class="col-12">
-                                                <label for="members" class="form-label">Members</label>
-                                                <div id="members" contenteditable="true" class="form-control"></div>
+                                                <label for="membersList" class="form-label">Members</label>
                                                 
+                                                <select class="form-control" multiple name="membersList" id="membersList">
+                                                    <% for(var i=0;i<friendList.length;i++) { %>
+
+                                                        <option value="<%=friendList[i].userid %>">
+                                                            <%=friendList[i].firstname %> <%=friendList[i].lastname %> (<%=friendList[i].emailid %>)
+                                                        </option>
+                                                        
+                                                        <% }%>
+
+                                                    <!-- Add more options as needed -->
+                                                  </select>
                                             </div>
                                            
                                             <div class="text-center">

@@ -3,6 +3,7 @@ const path=require("path");
 var bodyParser = require('body-parser');
 const mstuserDAO = require('./dao/MstUserDAO');
 const friendsDAO = require('./dao/FriendsMethodDAO');
+const groupDAO = require('./dao/GroupsMethodDAO');
 const bcrypt = require('bcrypt');
 const sessions = require('express-session');
 
@@ -78,16 +79,34 @@ app.get('/',function(req,res){
 
 });
 
-app.get('/addexpenses',function(req,res){
-    const profileDetails=req.session.profile;
+app.get('/addexpenses',sessionChecker,async (req,res)=>{
     
     
-    res.render('grouphome',{profile:profileDetails});
+    const userid= req.session.profile[0].userid;
+    
+    try {
+        const groupdList=await groupDAO.getGroups(userid);
+        res.render('grouphome',{groupdList:groupdList});
+       
+    } catch (err) {
+        res.status(500).json({ error: 'Internal server error' });
+    }
+    
 
 });
 
-app.get('/addgroup',function(req,res){
-    res.render('addgroup');
+app.get('/addgroup',sessionChecker,async(req,res)=>{
+
+
+    const userid= req.session.profile[0].userid;
+   
+    try {
+        const friendList=await friendsDAO.getFirendsList(userid);
+        res.render('addgroup' , {friendList:friendList});
+       
+    } catch (err) {
+        res.status(500).json({ error: 'Internal server error' });
+    }
 
 });
 
@@ -331,6 +350,39 @@ app.post('/removeFriend',sessionChecker,async (req,res)=>{
     
 
 });
+
+
+
+
+app.post('/addgroup',sessionChecker,async(req,res)=>{
+    const userid= req.session.profile[0].userid;
+    const groupname= req.body.groupname;
+    const members= req.body.membersList;
+
+
+    //If one friend is selected then the members is not coming as array. Needs to make it as an array
+    var membersList=[];
+
+    for (var i = 0; i <members.length; i++) { 
+        membersList.push(members[i]);
+    }
+
+    try{
+        await groupDAO.addGroups(userid,groupname,membersList)
+        const friendList=await friendsDAO.getFirendsList(userid);
+        res.render('addgroup' , {friendList:friendList});
+
+    }
+    catch(err){
+        res.status(500).json({ error: 'Internal server error' });
+    }
+    
+
+});
+
+
+
+
 app.listen(app.get('port'),function(){
     console.log('Listening to 3000')
 })
