@@ -4,6 +4,7 @@ var bodyParser = require('body-parser');
 const mstuserDAO = require('./dao/MstUserDAO');
 const friendsDAO = require('./dao/FriendsMethodDAO');
 const groupDAO = require('./dao/GroupsMethodDAO');
+const trnDAO = require('./dao/TrnMethodDAO');
 const bcrypt = require('bcrypt');
 const sessions = require('express-session');
 
@@ -376,6 +377,28 @@ app.post('/addgroup',sessionChecker,async(req,res)=>{
     catch(err){
         res.status(500).json({ error: 'Internal server error' });
     }
+    
+
+});
+
+
+
+
+app.post('/loadTrnData',sessionChecker,async (req,res)=>{
+    const friendid = parseInt(req.body.groupid) ;
+    const userid= req.session.profile[0].userid;
+    
+    try {
+        // Example: fetch data from database with pagination
+       const trnData= await trnDAO.loadTrn(userid, groupid);
+        return trnData;
+       
+    } catch (err) {
+        res.status(500).json({ error: 'Internal server error' });
+    }
+
+
+
     
 
 });
