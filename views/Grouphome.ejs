@@ -28,6 +28,13 @@
 
   <!-- Template Main CSS File -->
   <link href="css/style.css" rel="stylesheet">
+  <style>
+
+    .d-table-cell ul li{
+      color:white
+    }
+
+  </style>
 </head>
 
 
@@ -76,12 +83,16 @@
                   </div>
                   <div class="ea-flip-box-back-part">
                     <div class="d-table">
-                      <div class="d-table-cell" id="back_side_<%=groupdList[i].groupid%>">
-                        <p>Friend A owes : ₹ 10</p>
-                        <p>Friend B owed : ₹ 100</p>
-                        <p>OverAll : ₹ -90</p>
-                        <a href="#" class="link-btn" data-bs-toggle="modal" data-bs-target="#basicModal">Add
-                          Expenses</a>
+                      <div class="row">
+                      <div class="col-12 d-table-cell" id="back_side_<%=groupdList[i].groupid%>">
+                        
+                       
+                        
+                      </div>
+                      <div class="col-12">
+                      <a href="#" class="link-btn" data-bs-toggle="modal" data-bs-target="#basicModal">Add
+                        Expenses</a>
+                      </div>
                       </div>
                     </div>
                   </div>
@@ -163,9 +174,10 @@
       <!-- Template Main JS File -->
       <script src="js/main.js"></script>
 
-
+      <script src="js/jquery.min.js"></script>
       <script>
 
+$(document).ready(function () { });
         function loadData(groupid) {
 
           var back_side =$("#back_side_"+groupid);
@@ -176,7 +188,15 @@
             method: 'POST',
             data: { groupid: groupid },
             success: function (data) {
-              
+
+              var html="<ul>";
+              data.forEach(element => {
+                html+= "<li> <div class='row'><div class='col-10 '>"+element.name + " ("+element.emailid+"): </div> <div class='col-2 '>₹ "+element.amount+"</div></div> </li>";
+
+              });
+              html+="</ul>"
+              $("#back_side_"+groupid).html(html)
+              console.log(data)
             },
             error: function (err) {
               console.error('Error fetching data:', err);

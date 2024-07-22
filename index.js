@@ -385,16 +385,81 @@ app.post('/addgroup',sessionChecker,async(req,res)=>{
 
 
 app.post('/loadTrnData',sessionChecker,async (req,res)=>{
-    const friendid = parseInt(req.body.groupid) ;
+    const groupid = parseInt(req.body.groupid) ;
     const userid= req.session.profile[0].userid;
     
     try {
-        // Example: fetch data from database with pagination
+       
+        
        const trnData= await trnDAO.loadTrn(userid, groupid);
-        return trnData;
+       
+       // Money given to others
+       const oweWise = trnData[0];
+
+       // Money taken from Others
+       const owedWise = trnData[1];
+        
+       var amountMap = new Map();
+
+       
+       oweWise.forEach(element => {
+            var key= [element.owedbyid, element.owedbyname, element.owedbyemailid];
+            var value=parseFloat(element.amount);
+
+
+
+            if (amountMap.has(JSON.stringify(key))) {
+                let currentTotal = amountMap.get(JSON.stringify(key));
+                amountMap.set(JSON.stringify(key), currentTotal + value); // Sum up values for the same key
+            } else {
+                amountMap.set(JSON.stringify(key), value); // Initialize if key doesn't exist
+            }
+
+
+
+            
+           
+       });
+       
+
+       owedWise.forEach(element => {
+        var key= [element.paidbyid, element.paidbyname, element.paidbyemailid];
+        var value=parseFloat(element.amount);
+
+
+
+        if (amountMap.has(JSON.stringify(key))) {
+            let currentTotal = amountMap.get(JSON.stringify(key));
+            amountMap.set(JSON.stringify(key), currentTotal - value); // Sum up values for the same key
+        } else {
+            amountMap.set(JSON.stringify(key), value); // Initialize if key doesn't exist
+        }
+       
+
+   });
+       
+  // console.log(amountMap)
+   var allData = [];
+    amountMap.forEach((amount, key) => {
+                
+
+                // Destructuring assignment to extract values
+        const [id, name, email] = JSON.parse(key);
+
+    
+
+
+        allData.push({  name:name, emailid:email,amount:amount });
+    });
+    
+
+        console.log(allData)
+
+
+      res.json(allData);
        
     } catch (err) {
-        res.status(500).json({ error: 'Internal server error' });
+        return res.status(500).json({ error: 'Internal server error' });
     }
 
 
