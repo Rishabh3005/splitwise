@@ -75,4 +75,32 @@ data.getGroups =async (userid)=>{
 
 
 
+data.getOneGroupDetails = async (groupid)=>{
+
+    const pool= await dbPool.pool;
+    
+
+    const query="select a.groupid groupid, a.groupname groupname, b.memberid memberid, c.firstname firstname,"+
+    " c.lastname lastname, c.emailid emailid"+
+    " from equisplitschema.mstgroups a, equisplitschema.mstgroupsmember b, "+
+    " equisplitschema.mstusers c "+
+    " where a.groupid=$1 and a.groupid =b.groupid and b.memberid=c.userid ";
+
+    
+
+    try{
+      
+
+        const results=await pool.query(query, [groupid] );
+
+
+        return results.rows;
+            
+        }
+        catch (error){
+        console.log(error)
+        throw new Error(error);
+      }
+}
+
 module.exports = data;

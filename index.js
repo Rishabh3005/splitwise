@@ -453,7 +453,7 @@ app.post('/loadTrnData',sessionChecker,async (req,res)=>{
     });
     
 
-        console.log(allData)
+       
 
 
       res.json(allData);
@@ -467,6 +467,88 @@ app.post('/loadTrnData',sessionChecker,async (req,res)=>{
     
 
 });
+
+
+
+
+
+
+app.post('/getGroupDetails',sessionChecker,async (req,res)=>{
+    const groupid = parseInt(req.body.groupid) ;
+    const userid= req.session.profile[0].userid;
+    
+    try {
+       
+       const groupDetails= await groupDAO.getOneGroupDetails( groupid);
+       
+    
+
+
+       
+
+
+      res.json(groupDetails);
+       
+    } catch (err) {
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+
+
+
+    
+
+});
+
+
+
+
+
+
+app.post('/addtrn',sessionChecker,async(req,res)=>{
+    const userid= req.session.profile[0].userid;
+    const amount= req.body.amount;
+    const details= req.body.details;
+    const paidby= req.body.paidby;
+    const groupid= req.body.groupid;
+    var splitinto= req.body.splitinto;
+    splitinto= Array.isArray(splitinto)? splitinto:[splitinto]
+    
+   
+   
+
+    
+    try{
+        await trnDAO.saveTrn(userid,amount,details, paidby, splitinto,groupid)
+       
+        return res.redirect('addexpenses' );
+
+    }
+    catch(err){
+        res.status(500).json({ error: 'Internal server error' });
+    }
+    
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

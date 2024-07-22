@@ -90,7 +90,7 @@
                         
                       </div>
                       <div class="col-12">
-                      <a href="#" class="link-btn" data-bs-toggle="modal" data-bs-target="#basicModal">Add
+                      <a href="#" class="link-btn"  onclick="OpenModal(<%=groupdList[i].groupid%>)">Add
                         Expenses</a>
                       </div>
                       </div>
@@ -113,17 +113,23 @@
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title">Group Name</h5>
+              <h5 class="modal-title"></h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form>
+            <form action="/addtrn" method="post">
               <div class="modal-body">
 
+                <div class="row mb-3 " style="display: none;">
+                  <label for="groupid" class="col-sm-3 col-form-label">Group Id</label>
+                  <div class="col-sm-9">
+                    <input type="number" class="form-control" name="groupid" id="groupid">
+                  </div>
+                </div>
 
                 <div class="row mb-3">
                   <label for="amount" class="col-sm-3 col-form-label">Amount</label>
                   <div class="col-sm-9">
-                    <input type="number" class="form-control" id="amount">
+                    <input type="number" class="form-control" name="amount" id="amount">
                   </div>
                 </div>
 
@@ -131,14 +137,14 @@
                 <div class="row mb-3">
                   <label for="details" class="col-sm-3 col-form-label">Details</label>
                   <div class="col-sm-9">
-                    <input type="text" class="form-control" id="details">
+                    <input type="text" class="form-control" name="details" id="details">
                   </div>
                 </div>
 
                 <div class="row mb-3">
                   <label for="paidby" class="col-sm-3 col-form-label">Paid By</label>
                   <div class="col-sm-9">
-                    <input type="text" class="form-control" id="paidby">
+                    <select  class="form-control" id="paidby" name="paidby"></select>
                   </div>
                 </div>
 
@@ -146,7 +152,7 @@
                 <div class="row mb-3">
                   <label for="splitinto" class="col-sm-3 col-form-label">Split Into</label>
                   <div class="col-sm-9">
-                    <input type="text" class="form-control" id="splitinto">
+                    <select  class="form-control" id="splitinto" name="splitinto" multiple></select>
                   </div>
                 </div>
 
@@ -180,7 +186,7 @@
 $(document).ready(function () { });
         function loadData(groupid) {
 
-          var back_side =$("#back_side_"+groupid);
+          
 
 
           $.ajax({
@@ -196,12 +202,47 @@ $(document).ready(function () { });
               });
               html+="</ul>"
               $("#back_side_"+groupid).html(html)
-              console.log(data)
+              
             },
             error: function (err) {
               console.error('Error fetching data:', err);
             }
           });
+
+        }
+
+
+
+        function OpenModal(groupid){
+
+
+
+          $('#basicModal').modal('show');
+          
+         
+          $.ajax({
+            url: 'getGroupDetails',
+            method: 'POST',
+            data: { groupid: groupid },
+            success: function (data) {
+
+              $("#groupid").val(data[0].groupid)
+              $(".modal-title").text(data[0].groupname)
+              
+              var html="";
+              data.forEach(element => {
+                html+= "<option value='"+element.memberid+"'> " + element.firstname+" "+element.lastname+" ("+element.emailid+")</option>"
+
+              });
+              $("#paidby").html(html);
+              $("#splitinto").html(html)
+              
+            },
+            error: function (err) {
+              console.error('Error fetching data:', err);
+            }
+          });
+
 
         }
       </script>
