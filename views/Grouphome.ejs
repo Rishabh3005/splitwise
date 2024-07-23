@@ -90,7 +90,13 @@
                         
                       </div>
                       <div class="col-12">
-                      <a href="#" class="link-btn"  onclick="OpenModal(<%=groupdList[i].groupid%>)">Add
+                       <form method="POST" action="/groupTrnDetails" id="groupTrnDetails">
+
+                        <input value="<%=groupdList[i].groupid%>" name="groupid" id="groupid" style="display:none"/>
+                        <input value="<%=groupdList[i].groupname%>" name="groupname" id="groupname" style="display:none"/>
+                        <a href="#" class="link-btn"  onclick="submitForm(<%=groupdList[i].groupid%>)">View Details</a>
+                      </form>
+                        <a href="#" class="link-btn"  onclick="OpenModal(<%=groupdList[i].groupid%>)">Add
                         Expenses</a>
                       </div>
                       </div>
@@ -245,6 +251,18 @@ $(document).ready(function () { });
 
 
         }
+
+
+        function submitForm(groupid){
+
+
+          $("#groupTrnDetails").submit();
+
+        }
+
+
+
+
       </script>
 
 </body>

@@ -531,7 +531,28 @@ app.post('/addtrn',sessionChecker,async(req,res)=>{
 });
 
 
+app.post('/groupTrnDetails',sessionChecker,async(req,res)=>{
+    const userid= req.session.profile[0].userid;
+   
+    const groupid= req.body.groupid;
+    const groupname= req.body.groupname;
+   
+   
+   
 
+    
+    try{
+       const grpTrn= await groupDAO.getGroupsTrnDetails(groupid)
+       
+        return res.render('GroupTrnDetails', {grpTrn,groupname} );
+
+    }
+    catch(err){
+        res.status(500).json({ error: 'Internal server error' });
+    }
+    
+
+});
 
 
 

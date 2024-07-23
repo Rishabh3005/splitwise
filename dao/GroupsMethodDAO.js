@@ -103,4 +103,48 @@ data.getOneGroupDetails = async (groupid)=>{
       }
 }
 
+
+
+
+data.getGroupsTrnDetails =async (groupid)=>{
+
+    const pool= await dbPool.pool;
+    
+
+    const query="select trnid, groupid, paidby, paidbyemail, trndetails, trnamount, STRING_AGG(owedby||' ('||owedbyemailid||')' ::TEXT, ', ' ORDER BY owedby) AS combined_owedby "+
+    " from ( "+
+    " select a.trnid,a.groupid, (select c.firstname||' '||c.lastname from equisplitschema.mstusers c where c.userid=a.paidbyid) paidby, "+
+    "(select c.emailid from equisplitschema.mstusers c where c.userid=a.paidbyid) paidbyemail, "+
+    "a.trndetails, a.trnamount, "+
+    "(select c.firstname||' '||c.lastname from equisplitschema.mstusers c where c.userid= b.owedbyid) owedby, "+
+    "(select c.emailid from equisplitschema.mstusers c where c.userid= b.owedbyid) owedbyemailid "+
+    "from equisplitschema.trndetails a, equisplitschema.trnoweddetails b where a.trnid=b.trnid and a.groupid=$1 order by a.creationdate "+
+    ") GROUP BY trnid, groupid,paidby, paidbyemail, trndetails, trnamount "
+    ;
+
+    
+
+    try{
+      
+
+        const results=await pool.query(query, [groupid] );
+
+
+        return results.rows;
+            
+        }
+        catch (error){
+        console.log(error)
+        throw new Error(error);
+      }
+
+
+
+}
+
+
+
+
+
+
 module.exports = data;
