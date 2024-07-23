@@ -58,13 +58,13 @@ var sessionChecker = (req, res, next) => {
 
 //Get Request
 app.get('/',function(req,res){
-    res.render('home');
+    res.redirect('addexpenses');
 
 });
 
 
 app.get('/login',function(req,res){
-    res.render('login');
+    res.render('login',{error:""});
 
 });
 
@@ -75,10 +75,6 @@ app.get('/signup',function(req,res){
 });
 
 
-app.get('/',function(req,res){
-    res.render('home');
-
-});
 
 app.get('/addexpenses',sessionChecker,async (req,res)=>{
     
@@ -176,7 +172,7 @@ app.get('/sendRequest',sessionChecker, async (req, res) => {
     try {
         // Example: fetch data from database with pagination
         await friendsDAO.sendRequest(userid, friendid);
-       
+        res.status(200).send("Success")
     } catch (err) {
         res.status(500).json({ error: 'Internal server error' });
     }
@@ -243,9 +239,9 @@ app.post('/login',function(req,res){
         
         try{
         const hashPassword=await mstuserDAO.hashPassword(emailid);
-        //console.log(hashPassword);
+        
         if(hashPassword[0]==null)
-            return res.jsonp("Username doesn't exist.");
+             res.render("login",{error:"*Username doesn't exist."});
         else{
             var hashPass=hashPassword[0].password;
             const result= await bcrypt.compare(password, hashPass);
@@ -254,9 +250,10 @@ app.post('/login',function(req,res){
             const loginUser=await mstuserDAO.loginUser(emailid);
            
             req.session.profile=loginUser;
-            return res.redirect("/addexpenses");
+             res.redirect("/addexpenses");
             }else{
-                return res.jsonp("Password is incorrect");
+                res.render("login",{error:"*Password is incorrect."});
+                
             }
         }
         
@@ -295,7 +292,7 @@ app.post('/acceptFriend',sessionChecker,async (req,res)=>{
     try {
         // Example: fetch data from database with pagination
         await friendsDAO.acceptFriend(userid,friendid);
-        
+        res.redirect("request")
        
     } catch (err) {
         res.status(500).json({ error: 'Internal server error' });

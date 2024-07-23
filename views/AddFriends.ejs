@@ -173,7 +173,7 @@ const limit = 10; // Number of items to fetch per page
 
              if(flag==2)
 
-                html+="<button class='btn btn-primary btn-sm' onclick='addFriend("+id+")'>Add Friend</button>";
+                html+="<button class='btn btn-primary btn-sm' onclick='addFriend("+id+")' id='addFriend_"+id+"'>Add Friend</button>";
             else if(flag==1)
                 html+="<p>Pending Request</p>"
             else
@@ -192,7 +192,9 @@ const limit = 10; // Number of items to fetch per page
             method: 'GET',
             data: { friendid: id},
             success: function() {
-                   
+                console.log('hereeeeee')
+                   $("#addFriend_"+id).text('Request Sent');
+                   $("#addFriend_"+id).prop('disabled',true);                   
             },
             error: function(err) {
                 console.error('Error fetching data:', err);
